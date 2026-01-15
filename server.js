@@ -66,31 +66,36 @@
 
 import express from "express";
 import fetch from "node-fetch";
-import cors from "cors";
 
 const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
-// Logging Middleware
-app.use((req, res, next) => {
-  console.log(`[Request] ${req.method} ${req.url}`);
-  next();
-});
-
-const corsOptions = {
-  origin: "*", // Allow all origins for debugging
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-
 app.use(express.json());
 
+/**
+ * ✅ HANDLE PREFLIGHT MANUALLY (CRITICAL)
+ */
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://travelo-t.netlify.app"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  res.setHeader("Vary", "Origin");
 
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 /**
  * 🔁 GENERIC PROXY
@@ -120,11 +125,6 @@ app.use("/api", async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Proxy error" });
   }
-});
-
-// Health Check
-app.get("/", (req, res) => {
-  res.send("✅ Proxy Server is Running!");
 });
 
 const PORT = process.env.PORT || 3000;
