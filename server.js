@@ -5,7 +5,6 @@ import cors from "cors";
 const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
-
 const corsOptions = {
   origin: "https://travelo-t.netlify.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -15,14 +14,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-
 app.use(express.json());
-
 
 app.use("/api", async (req, res) => {
   try {
-    const targetUrl =
-      BACKEND_BASE_URL + req.originalUrl.replace("/api", "");
+    const targetUrl = BACKEND_BASE_URL + req.originalUrl.replace("/api", "");
 
     const response = await fetch(targetUrl, {
       method: req.method,
@@ -40,6 +36,7 @@ app.use("/api", async (req, res) => {
 
     const text = await response.text();
 
+
     res.setHeader(
       "Access-Control-Allow-Origin",
       "https://travelo-t.netlify.app"
@@ -52,6 +49,7 @@ app.use("/api", async (req, res) => {
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, DELETE, OPTIONS"
     );
+    res.setHeader("Vary", "Origin");
 
     res.status(response.status).send(text);
   } catch (err) {
