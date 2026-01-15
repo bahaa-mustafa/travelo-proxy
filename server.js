@@ -71,6 +71,12 @@ import cors from "cors";
 const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
+// Logging Middleware
+app.use((req, res, next) => {
+  console.log(`[Request] ${req.method} ${req.url}`);
+  next();
+});
+
 const corsOptions = {
   origin: "*", // Allow all origins for debugging
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
