@@ -122,6 +122,11 @@ app.use("/api", async (req, res) => {
   }
 });
 
+// Health Check
+app.get("/", (req, res) => {
+  res.send("✅ Proxy Server is Running!");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("✅ Proxy running on port", PORT);
