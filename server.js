@@ -72,7 +72,7 @@ const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
 const corsOptions = {
-  origin: "https://travelo-t.netlify.app",
+  origin: "*", // Allow all origins for debugging
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   preflightContinue: false,
