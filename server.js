@@ -75,39 +75,24 @@ app.use(express.json());
 /**
  * ✅ HANDLE PREFLIGHT MANUALLY (CRITICAL)
  */
-// 1. Handle Preflight Requests (OPTIONS)
-app.options("*", (req, res) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://travelo-t.netlify.app"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Accept, Origin, X-Requested-With"
-  );
-  res.setHeader("Vary", "Origin");
-  res.sendStatus(200);
-});
-
-// 2. Set CORS Headers for all other requests
+// ✅ Universal CORS Middleware (Express 5 Compatible)
 app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://travelo-t.netlify.app"
-  );
+  res.setHeader("Access-Control-Allow-Origin", "https://travelo-t.netlify.app");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
+    "GET, POST, PUT, DELETE, OPTIONS, HEAD"
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, Accept, Origin, X-Requested-With"
   );
   res.setHeader("Vary", "Origin");
+
+  // Handle Preflight (OPTIONS) directly in middleware
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 
