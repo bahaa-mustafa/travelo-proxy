@@ -66,36 +66,20 @@
 
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
+app.use(cors({
+  origin: "https://travelo-t.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
-/**
- * ✅ HANDLE PREFLIGHT MANUALLY (CRITICAL)
- */
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://travelo-t.netlify.app"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-  res.setHeader("Vary", "Origin");
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
 
 /**
  * 🔁 GENERIC PROXY
