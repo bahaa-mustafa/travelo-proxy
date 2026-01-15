@@ -71,11 +71,16 @@ import cors from "cors";
 const app = express();
 const BACKEND_BASE_URL = "http://traveloo.runasp.net";
 
-app.use(cors({
+const corsOptions = {
   origin: "https://travelo-t.netlify.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+  allowedHeaders: ["Content-Type", "Authorization"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
