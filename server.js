@@ -99,6 +99,45 @@ app.use((req, res, next) => {
 /**
  * 🔁 GENERIC PROXY
  */
+
+// images
+/**
+ * 🖼️ GENERIC IMAGE PROXY
+ * /img/*  --->  http://traveloo.runasp.net/*
+ */
+app.get("/img/*", async (req, res) => {
+  try {
+    // شيل /img من أول الطريق
+    const imagePath = req.originalUrl.replace("/img", "");
+
+    const imageUrl = BACKEND_BASE_URL + imagePath;
+
+    const response = await fetch(imageUrl);
+
+    // مهم جدًا
+    res.setHeader(
+      "Content-Type",
+      response.headers.get("content-type") || "image/jpeg"
+    );
+
+    // Optional (كويس للأداء)
+    if (response.headers.get("content-length")) {
+      res.setHeader(
+        "Content-Length",
+        response.headers.get("content-length")
+      );
+    }
+
+    // STREAM IMAGE
+    response.body.pipe(res);
+  } catch (err) {
+    console.error("Image proxy error:", err);
+    res.status(500).end();
+  }
+});
+
+
+// general
 app.use("/api", async (req, res) => {
   try {
     const targetUrl =
