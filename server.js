@@ -101,18 +101,29 @@ app.use((req, res, next) => {
  */
 
 // images
-app.get("/img/:path(*)", async (req, res) => {
-  const imagePath = req.params.path;
-  const imageUrl = `${BACKEND_BASE_URL}/${imagePath}`;
+app.use("/img", async (req, res) => {
+  try {
+    // req.path = /Cities/NewYork.jpg
+    const imageUrl = BACKEND_BASE_URL + req.path;
 
-  const response = await fetch(imageUrl);
+    const response = await fetch(imageUrl);
 
-  res.setHeader(
-    "Content-Type",
-    response.headers.get("content-type") || "image/jpeg"
-  );
+    if (!response.ok) {
+      return res.status(response.status).end();
+    }
 
-  response.body.pipe(res);
+    const contentType = response.headers.get("content-type");
+    if (contentType) {
+      res.setHeader("Content-Type", contentType);
+    }
+
+    res.setHeader("Cache-Control", "public, max-age=86400");
+
+    response.body.pipe(res);
+  } catch (err) {
+    console.error("Image proxy error:", err);
+    res.status(500).end();
+  }
 });
 
 
