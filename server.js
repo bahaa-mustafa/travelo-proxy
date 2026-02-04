@@ -14,8 +14,18 @@ app.use(express.json());
  * ✅ HANDLE PREFLIGHT MANUALLY (CRITICAL)
  */
 // ✅ Universal CORS Middleware (Express 5 Compatible)
+
+const allowedOrigins = [
+  "https://travelo-t.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://travelo-t.netlify.app");
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS, HEAD"
